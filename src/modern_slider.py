@@ -19,7 +19,7 @@ class Slider(QWidget):
         # Init settings
         self.minimum = 0
         self.maximum = 10
-        self.float = False
+        self.is_float = False
         self.decimals = 1
         self.single_step = 0
         self.page_step = 0
@@ -27,7 +27,7 @@ class Slider(QWidget):
         self.decimal_seperator = '.'
         self.prefix = ''
         self.suffix = ''
-        self.display_value = True
+        self.showing_value = True
         self.text_color = QtGui.QColor('#000000')
         self.background_color = QtGui.QColor('#D6D6D6')
         self.accent_color = QtGui.QColor('#0078D7')
@@ -43,7 +43,7 @@ class Slider(QWidget):
         self.value = 0.0
 
         # Slider drag handling
-        self.mouse_pressed = False
+        self.left_mouse_pressed = False
 
         # Widget that will be turned into a slider
         self.slider = QLabel(self)
@@ -66,8 +66,14 @@ class Slider(QWidget):
         self.update()
 
     def mousePressEvent(self, event):
+        """Event that happens every time a mouse button gets pressed on this widget.
+        If the left mouse button is being pressed, calculate and set new value
+
+        :param event: the event sent by PyQt
+        """
+
         if event.button() == Qt.LeftButton:
-            self.mouse_pressed = True
+            self.left_mouse_pressed = True
             # Set value and position
             self.value = self.__get_value_from_position_x(event.pos().x())
             self.position_x = self.__clamp_position_x(event.pos().x())
@@ -77,8 +83,14 @@ class Slider(QWidget):
             self.__emit_value_changed()
 
     def mouseReleaseEvent(self, event):
+        """Event that happens every time a mouse button gets released on this widget.
+        If the left mouse button is being released, calculate and set new value
+
+        :param event: the event sent by PyQt
+        """
+
         if event.button() == Qt.LeftButton:
-            self.mouse_pressed = False
+            self.left_mouse_pressed = False
             # Set value and position
             self.value = self.__get_value_from_position_x(event.pos().x())
             self.position_x = self.__clamp_position_x(event.pos().x())
@@ -88,7 +100,13 @@ class Slider(QWidget):
             self.__emit_value_changed()
 
     def mouseMoveEvent(self, event):
-        if self.mouse_pressed:
+        """Event that happens every time the mouse gets moved on this widget.
+        If the left mouse is being dragged, calculate and set new value
+
+        :param event: the event sent by PyQt
+        """
+
+        if self.left_mouse_pressed:
             # Set value and position
             self.value = self.__get_value_from_position_x(event.pos().x())
             self.position_x = self.__clamp_position_x(event.pos().x())
@@ -98,6 +116,13 @@ class Slider(QWidget):
             self.__emit_value_changed()
 
     def wheelEvent(self, event):
+        """Event that happens every time the mouse wheel is scrolled on this widget.
+        Scrolling up increments the slider value by the single step * the amount scrolled.
+        Scrolling down decrements the slider value by the single step * the amount scrolled.
+
+        :param event: the event sent by PyQt
+        """
+
         # Scrolled up
         if event.angleDelta().y() > 0:
             if self.single_step > 0:
@@ -115,6 +140,17 @@ class Slider(QWidget):
                 self.setValue(self.__clamp_value(self.value - single_step))
 
     def keyPressEvent(self, event):
+        """Event that happens every time a key is pressed on this widget.
+        The Home key sets the slider value to the minimum.
+        The End key sets the slider value to the maximum.
+        The Right and Up arrow keys increment the slider value by the single step.
+        The Left and Down arrow keys decrement the slider value by the single step.
+        The PageUp key increments the slider value by the page step.
+        The PageDown key decrements the slider value by the page step.
+
+        :param event: the event sent by PyQt
+        """
+
         # Home key
         if event.key() == Qt.Key_Home:
             self.setValue(self.minimum)
@@ -156,6 +192,12 @@ class Slider(QWidget):
                 self.setValue(self.__clamp_value(self.value - page_step))
 
     def paintEvent(self, event):
+        """Event that happens every time a widget needs to update itself.
+        All the drawing of the slider happens in here
+
+        :param event: the event sent by PyQt
+        """
+
         # Check if range is valid
         if self.minimum >= self.maximum:
             raise RuntimeError('Slider minimum must be less than maximum')
@@ -201,13 +243,13 @@ class Slider(QWidget):
             painter.drawRoundedRect(rect, self.border_radius, self.border_radius)
 
         # Draw slider value
-        if self.display_value:
+        if self.showing_value:
             # Set pen color to text color
             pen.setColor(self.text_color)
             painter.setPen(pen)
 
             # Create formatted string from value
-            value_string = self.__format_value(self.value, self.float, self.decimals,
+            value_string = self.__format_value(self.value, self.is_float, self.decimals,
                                                self.thousands_seperator, self.decimal_seperator)
             value_string_full = self.prefix + value_string + self.suffix
 
@@ -234,168 +276,399 @@ class Slider(QWidget):
         # End painter
         painter.end()
 
-    def getValue(self):
+    def getValue(self) -> int | float:
+        """Get the current value of the slider
+
+        :return: the current value
+        """
+
         # Float
-        if self.float:
+        if self.is_float:
             return round(self.value, self.decimals)
         # Int
         else:
             return int(self.value)
 
-    def setValue(self, value: float):
+    def setValue(self, value: int | float):
+        """Set the value of the slider
+
+        :param value: the new value
+        """
+
         self.value = self.__clamp_value(value)
         self.position_x = None
         self.update()
         # Emit value changed signal
         self.__emit_value_changed()
 
-    def getMinimum(self):
+    def getMinimum(self) -> int | float:
+        """Get the minimum value of the slider
+
+        :return: the minimum value
+        """
+
         return self.minimum
 
-    def setMinimum(self, minimum: float):
+    def setMinimum(self, minimum: int | float):
+        """Set the minimum value of the slider
+
+        :param minimum: the new minimum value
+        """
+
         self.minimum = minimum
         self.update()
 
-    def getMaximum(self):
+    def getMaximum(self) -> int | float:
+        """Get the maximum value of the slider
+
+        :return: the maximum value
+        """
+
         return self.maximum
 
-    def setMaximum(self, maximum: float):
+    def setMaximum(self, maximum: int | float):
+        """Set the maximum value of the slider
+
+        :param maximum: the new maximum value
+        """
+
         self.maximum = maximum
         self.update()
 
-    def getRange(self):
+    def getRange(self) -> tuple[int | float, int | float]:
+        """Get slider value range (minimum and maximum)
+
+        :return: the minimum and maximum value the slider can have
+        """
+
         return self.minimum, self.maximum
 
-    def setRange(self, minimum: float, maximum: float):
+    def setRange(self, minimum: int | float, maximum: int | float):
+        """Set slider value range (minimum and maximum)
+
+        :param minimum: the minimum value of the slider
+        :param maximum: the maximum value of the slider
+        """
+
         self.minimum = minimum
         self.maximum = maximum
 
-    def isFloat(self):
-        return self.float
+    def isFloat(self) -> bool:
+        """Get whether the slider is a float slider
+
+        :return: whether the slider is a float slider
+        """
+
+        return self.is_float
 
     def setFloat(self, use_float: bool):
-        self.float = use_float
+        """Set whether the slider should be a float slider
+
+        :param use_float: whether the slider should be a float slider
+        """
+
+        self.is_float = use_float
         self.update()
 
-    def getDecimals(self):
+    def getDecimals(self) -> int:
+        """Get the amount of decimal places of the slider value
+
+        :return: the current amount of decimal places
+        """
+
         return self.decimals
 
     def setDecimals(self, decimals: int):
+        """Set the amount of decimal places of the slider value
+
+        :param decimals: the new amount of decimal places
+        """
+
         self.decimals = decimals
         self.update()
 
-    def getSingleStep(self):
+    def getSingleStep(self) -> int | float:
+        """Get slider single step
+
+        :return: the current single step
+        """
+
         return self.single_step
 
-    def setSingleStep(self, single_step: float):
+    def setSingleStep(self, single_step: int | float):
+        """Set slider single step
+
+        :param single_step: the new single step
+        """
+
         self.single_step = single_step
 
-    def getPageStep(self):
+    def getPageStep(self) -> int | float:
+        """Get slider page step
+
+        :return: the current page step
+        """
+
         return self.page_step
 
-    def setPageStep(self, page_step: float):
+    def setPageStep(self, page_step: int | float):
+        """Set slider page step
+
+        :param page_step: the new page step
+        """
+
         self.page_step = page_step
 
-    def getThousandsSeperator(self):
+    def getThousandsSeperator(self) -> str:
+        """Get thousands seperator of the slider
+
+        :return: the current thousands seperator
+        """
+
         return self.thousands_seperator
 
     def setThousandsSeperator(self, thousands_seperator: str):
+        """Set thousands seperator of the slider
+
+        :param thousands_seperator: the new thousands seperator
+        """
+
         self.thousands_seperator = thousands_seperator
         self.update()
 
-    def getDecimalSeperator(self):
+    def getDecimalSeperator(self) -> str:
+        """Get decimal seperator of the slider
+
+        :return: the current decimal seperator
+        """
+
         return self.decimal_seperator
 
     def setDecimalSeperator(self, decimal_seperator: str):
+        """Set decimal seperator of the slider
+
+        :param decimal_seperator: the new decimal seperator
+        """
+
         self.decimal_seperator = decimal_seperator
         self.update()
 
-    def getPrefix(self):
+    def getPrefix(self) -> str:
+        """Get slider prefix
+
+        :return: the current prefix
+        """
+
         return self.prefix
 
     def setPrefix(self, prefix: str):
+        """Set slider prefix
+
+        :param prefix: the new prefix
+        """
+
         self.prefix = prefix
         self.update()
 
-    def getSuffix(self):
+    def getSuffix(self) -> str:
+        """Get slider suffix
+
+        :return: the current suffix
+        """
+
         return self.suffix
 
     def setSuffix(self, suffix: str):
+        """Set slider suffix
+
+        :param suffix: the new suffix
+        """
+
         self.suffix = suffix
         self.update()
 
-    def getShowValue(self):
-        return self.display_value
+    def isShowingValue(self) -> bool:
+        """Get whether the value is shown
+
+        :return: whether the value is being shown
+        """
+
+        return self.showing_value
 
     def showValue(self, show_value: bool):
-        self.display_value = show_value
+        """Set whether the value should be shown
 
-    def getTextColor(self):
+        :param show_value: whether the value should be shown
+        """
+
+        self.showing_value = show_value
+
+    def getTextColor(self) -> QtGui.QColor:
+        """Get the text color of the slider
+
+        :return: the current text color
+        """
+
         return self.text_color
 
     def setTextColorHex(self, text_color_hex: str):
+        """Set the text color of the slider with given hex value
+
+        :param text_color_hex: the hex value
+        """
+
         self.text_color = QtGui.QColor(text_color_hex)
         self.update()
 
     def setTextColorRgba(self, r: int, g: int, b: int, a: int):
+        """Set the text color of the slider with given rgba values
+
+        :param r: red
+        :param g: green
+        :param b: blue
+        :param a: alpha
+        """
+
         self.text_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
         self.update()
 
-    def getBackgroundColor(self):
+    def getBackgroundColor(self) -> QtGui.QColor:
+        """Get the background color of the slider
+
+        :return: the current background color
+        """
+
         return self.background_color
 
     def setBackgroundColorHex(self, background_color_hex: str):
+        """Set the background color of the slider with given hex value
+
+        :param background_color_hex: the hex value
+        """
+
         self.background_color = QtGui.QColor(background_color_hex)
         self.update()
 
     def setBackgroundColorRgba(self, r: int, g: int, b: int, a: int):
+        """Set the background color of the slider with given rgba values
+
+        :param r: red
+        :param g: green
+        :param b: blue
+        :param a: alpha
+        """
+
         self.background_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
         self.update()
 
-    def getAccentColor(self):
+    def getAccentColor(self) -> QtGui.QColor:
+        """Get the accent color of the slider
+
+        :return: the current accent color
+        """
+
         return self.accent_color
 
     def setAccentColorHex(self, accent_color_hex: str):
+        """Set the accent color of the slider with given hex value
+
+        :param accent_color_hex: the hex value
+        """
+
         self.accent_color = QtGui.QColor(accent_color_hex)
         self.update()
 
     def setAccentColorRgba(self, r: int, g: int, b: int, a: int):
+        """Set the accent color of the slider with given rgba values
+
+        :param r: red
+        :param g: green
+        :param b: blue
+        :param a: alpha
+        """
+
         self.accent_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
         self.update()
 
-    def getBorderColor(self):
+    def getBorderColor(self) -> QtGui.QColor:
+        """Get the border color of the slider
+
+        :return: the current border color
+        """
+
         return self.border_color
 
     def setBorderColorHex(self, border_color_hex: str):
+        """Set the border color of the slider with given hex value
+
+        :param border_color_hex: the hex value
+        """
+
         self.border_color = QtGui.QColor(border_color_hex)
         self.__update_stylesheet()
         self.update()
 
     def setBorderColorRgba(self, r: int, g: int, b: int, a: int):
+        """Set the border color of the slider with given rgba values
+
+        :param r: red
+        :param g: green
+        :param b: blue
+        :param a: alpha
+        """
+
         self.border_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
         self.__update_stylesheet()
         self.update()
 
-    def getBorderRadius(self):
+    def getBorderRadius(self) -> int:
+        """Get border radius of the slider
+
+        :return: the current border radius
+        """
+
         return self.border_radius
 
     def setBorderRadius(self, border_radius: int):
+        """Set border radius of the slider
+
+        :param border_radius: the new border radius
+        """
+
         self.border_radius = border_radius
         self.__update_stylesheet()
         self.update()
 
-    def getFont(self):
+    def getFont(self) -> QtGui.QFont:
+        """Get font of the slider
+
+        :return: the current font
+        """
+
         return self.font
 
     def setFont(self, font: QtGui.QFont):
+        """Set font of the slider
+
+        :param font: the new font
+        """
+
         self.font = font
 
     def __update_stylesheet(self):
+        """Update the stylesheet with the current values"""
+
         border_color_hex = self.border_color.name()
         self.slider.setStyleSheet('QLabel {border: 1px solid ' + border_color_hex +
                                   '; border-radius: ' + str(self.border_radius) + 'px;}')
 
-    def __get_value_from_position_x(self, position_x: int):
+    def __get_value_from_position_x(self, position_x: int) -> int | float:
+        """Get slider value from position_x value
+
+        :param position_x: the position_x value
+        :return: the slider value
+        """
+
         # Get slider range
         value_range = self.__get_value_range()
 
@@ -407,7 +680,13 @@ class Slider(QWidget):
 
         return self.__clamp_value(value)
 
-    def __get_position_x_from_value(self, value: float):
+    def __get_position_x_from_value(self, value: int | float) -> int:
+        """Get position_x value from slider value
+
+        :param value: the slider value
+        :return: the position_x value
+        """
+
         # Get slider range
         value_range = self.__get_value_range()
 
@@ -421,28 +700,55 @@ class Slider(QWidget):
 
         return int(position_x)
 
-    def __get_value_range(self):
+    def __get_value_range(self) -> int | float:
+        """Get the range from minimum to maximum of the slider
+
+        :return: the value range
+        """
+
         if self.minimum < 0:
             return self.maximum + abs(self.minimum)
         else:
             return self.maximum - self.minimum
 
-    def __clamp_position_x(self, position_x: int):
+    def __clamp_position_x(self, position_x: int) -> int:
+        """Make sure that position_x stays between 0 and slider width
+
+        :param position_x: the position_x value that will get clamped
+        :return: the clamped position_x value
+        """
+
         if position_x > self.width():
             position_x = self.width()
         if position_x < 0:
             position_x = 0
         return position_x
 
-    def __clamp_value(self, value: float):
+    def __clamp_value(self, value: int | float) -> int | float:
+        """Make sure that value stays in slider range
+
+        :param value: the value that will get clamped
+        :return: the clamped value
+        """
+
         if value > self.maximum:
             value = self.maximum
         if value < self.minimum:
             value = self.minimum
         return value
 
-    def __format_value(self, value: float, is_float: bool, decimals: int,
-                       thousands_seperator: str, decimal_seperator: str):
+    def __format_value(self, value: int | float, is_float: bool, decimals: int,
+                       thousands_seperator: str, decimal_seperator: str) -> str:
+        """Format value into a string with given settings
+
+        :param value: the value that will get formatted
+        :param is_float: if the value should be a float
+        :param decimals: the number of decimal places
+        :param thousands_seperator: the thousands seperator
+        :param decimal_seperator: the decimal seperator
+        :return: the formatted value as a string
+        """
+
         # Float slider
         if is_float:
             string_format = '{:,.' + str(decimals) + 'f}'
@@ -459,8 +765,10 @@ class Slider(QWidget):
         return string_format.format(int(value)).replace(',', thousands_seperator)
 
     def __emit_value_changed(self):
+        """Emit signal that the value of the slider has changed"""
+
         # Float slider
-        if self.float:
+        if self.is_float:
             self.valueChanged.emit(round(self.value, self.decimals))
         # Int slider
         else:
