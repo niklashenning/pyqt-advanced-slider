@@ -8,7 +8,7 @@ A clean and customizable PyQt5 slider widget for integers and floats
 * Supports dynamic switching between types
 * Customizable decimal places
 * Customizable prefix and suffix
-* Customizable decimal seperator and thousands seperator
+* Customizable decimal separator and thousands separator
 * Supports keyboard and mouse wheel input
 * Modern and customizable UI
 
@@ -56,8 +56,8 @@ demo_slider.setSuffix(' €')
 ```
 
 ```python
-demo_slider.setDecimalSeperator(',')
-demo_slider.setThousandsSeperator('.')
+demo_slider.setDecimalSeparator(',')
+demo_slider.setThousandsSeparator('.')
 ```
 
 ```python
