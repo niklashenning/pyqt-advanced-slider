@@ -520,8 +520,8 @@ class Slider(QWidget):
         self.text_color = QtGui.QColor(text_color_hex)
         self.update()
 
-    def setTextColorRgba(self, r: int, g: int, b: int, a: int):
-        """Set the text color of the slider with given rgba values
+    def setTextColorRgb(self, r: int, g: int, b: int):
+        """Set the text color of the slider with given rgb values
 
         :param r: red
         :param g: green
@@ -529,7 +529,7 @@ class Slider(QWidget):
         :param a: alpha
         """
 
-        self.text_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
+        self.text_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
         self.update()
 
     def getBackgroundColor(self) -> QtGui.QColor:
@@ -549,16 +549,15 @@ class Slider(QWidget):
         self.background_color = QtGui.QColor(background_color_hex)
         self.update()
 
-    def setBackgroundColorRgba(self, r: int, g: int, b: int, a: int):
-        """Set the background color of the slider with given rgba values
+    def setBackgroundColorRgb(self, r: int, g: int, b: int):
+        """Set the background color of the slider with given rgb values
 
         :param r: red
         :param g: green
         :param b: blue
-        :param a: alpha
         """
 
-        self.background_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
+        self.background_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
         self.update()
 
     def getAccentColor(self) -> QtGui.QColor:
@@ -578,16 +577,15 @@ class Slider(QWidget):
         self.accent_color = QtGui.QColor(accent_color_hex)
         self.update()
 
-    def setAccentColorRgba(self, r: int, g: int, b: int, a: int):
-        """Set the accent color of the slider with given rgba values
+    def setAccentColorRgb(self, r: int, g: int, b: int):
+        """Set the accent color of the slider with given rgb values
 
         :param r: red
         :param g: green
         :param b: blue
-        :param a: alpha
         """
 
-        self.accent_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
+        self.accent_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
         self.update()
 
     def getBorderColor(self) -> QtGui.QColor:
@@ -608,16 +606,15 @@ class Slider(QWidget):
         self.__update_stylesheet()
         self.update()
 
-    def setBorderColorRgba(self, r: int, g: int, b: int, a: int):
-        """Set the border color of the slider with given rgba values
+    def setBorderColorRgb(self, r: int, g: int, b: int):
+        """Set the border color of the slider with given rgb values
 
         :param r: red
         :param g: green
         :param b: blue
-        :param a: alpha
         """
 
-        self.border_color = QtGui.QColor.fromRgba(QtGui.qRgba(r, g, b, a))
+        self.border_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
         self.__update_stylesheet()
         self.update()
 
