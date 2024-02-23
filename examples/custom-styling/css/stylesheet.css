@@ -1,0 +1,25 @@
+#window {
+    background: #E9E9E9;
+    border: 1px solid #CACACA;
+    border-radius: 7px;
+}
+
+#window_bar {
+    background-color: #CBC7C7;
+    border-radius: 7px;
+}
+
+#window_title {
+    color: #333333;
+    font-size: 12px;
+}
+
+#close_button {
+    color: #333333;
+    background-color: #9C9C9C;
+    border-radius: 11px;
+}
+
+#label_1, #label_2, #label_3, #label_4 {
+    font-size: 12px;
+}
