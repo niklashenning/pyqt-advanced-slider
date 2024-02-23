@@ -85,7 +85,7 @@ class Window(QMainWindow):
         self.slider_2.setThousandsSeparator(',')  # Add thousands separator
         self.slider_2.setSingleStep(50)  # Set custom single step value
         self.slider_2.setPageStep(250)  # Set custom page step value
-        self.slider_2.setBorderRadius(3)  # Rounded borders
+        self.slider_2.setBorderRadius(3)  # Rounded corners
         self.slider_2.setAccentColorHex('#f0921f')  # Orange accent color
         self.slider_2.valueChanged.connect(self.slider_2_value_changed)  # Connect change event
 
@@ -96,7 +96,7 @@ class Window(QMainWindow):
         self.slider_3.setFloat(True)  # Change to float slider
         self.slider_3.setDecimals(3)  # Show 3 decimal places
         self.slider_3.setSuffix('°')  # Add slider value suffix
-        self.slider_3.setBorderRadius(5)  # Rounded borders
+        self.slider_3.setBorderRadius(5)  # Rounded corners
         self.slider_3.setAccentColorHex('#a033e8')  # Purple slider color
         self.slider_3.valueChanged.connect(self.slider_3_value_changed)  # Connect change event
 
@@ -105,7 +105,7 @@ class Window(QMainWindow):
         self.slider_4.setRange(-150.0, 300.0)  # Set slider min and max
         self.slider_4.setValue(12.5)  # Set slider value
         self.slider_4.setFloat(True)  # Change to float slider
-        self.slider_4.setBorderRadius(3)  # Rounded borders
+        self.slider_4.setBorderRadius(3)  # Rounded corners
         self.slider_4.setAccentColorHex('#666666')  # Dark gray accent color
         self.slider_4.setBorderColorHex('#999999')  # Gray border color
         self.slider_4.valueChanged.connect(self.slider_4_value_changed)  # Connect change event
