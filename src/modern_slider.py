@@ -23,8 +23,8 @@ class Slider(QWidget):
         self.decimals = 1
         self.single_step = 0
         self.page_step = 0
-        self.thousands_seperator = ''
-        self.decimal_seperator = '.'
+        self.thousands_separator = ''
+        self.decimal_separator = '.'
         self.prefix = ''
         self.suffix = ''
         self.showing_value = True
@@ -250,7 +250,7 @@ class Slider(QWidget):
 
             # Create formatted string from value
             value_string = self.__format_value(self.value, self.is_float, self.decimals,
-                                               self.thousands_seperator, self.decimal_seperator)
+                                               self.thousands_separator, self.decimal_separator)
             value_string_full = self.prefix + value_string + self.suffix
 
             # Get string width and height for current font
@@ -419,38 +419,38 @@ class Slider(QWidget):
 
         self.page_step = page_step
 
-    def getThousandsSeperator(self) -> str:
-        """Get thousands seperator of the slider
+    def getThousandsSeparator(self) -> str:
+        """Get thousands separator of the slider
 
-        :return: the current thousands seperator
+        :return: the current thousands separator
         """
 
-        return self.thousands_seperator
+        return self.thousands_separator
 
-    def setThousandsSeperator(self, thousands_seperator: str):
-        """Set thousands seperator of the slider
+    def setThousandsSeparator(self, thousands_separator: str):
+        """Set thousands separator of the slider
 
-        :param thousands_seperator: the new thousands seperator
+        :param thousands_separator: the new thousands separator
         """
 
-        self.thousands_seperator = thousands_seperator
+        self.thousands_separator = thousands_separator
         self.update()
 
-    def getDecimalSeperator(self) -> str:
-        """Get decimal seperator of the slider
+    def getDecimalSeparator(self) -> str:
+        """Get decimal separator of the slider
 
-        :return: the current decimal seperator
+        :return: the current decimal separator
         """
 
-        return self.decimal_seperator
+        return self.decimal_separator
 
-    def setDecimalSeperator(self, decimal_seperator: str):
-        """Set decimal seperator of the slider
+    def setDecimalSeparator(self, decimal_separator: str):
+        """Set decimal separator of the slider
 
-        :param decimal_seperator: the new decimal seperator
+        :param decimal_separator: the new decimal separator
         """
 
-        self.decimal_seperator = decimal_seperator
+        self.decimal_separator = decimal_separator
         self.update()
 
     def getPrefix(self) -> str:
@@ -738,31 +738,31 @@ class Slider(QWidget):
         return value
 
     def __format_value(self, value: int | float, is_float: bool, decimals: int,
-                       thousands_seperator: str, decimal_seperator: str) -> str:
+                       thousands_separator: str, decimal_separator: str) -> str:
         """Format value into a string with given settings
 
         :param value: the value that will get formatted
         :param is_float: if the value should be a float
         :param decimals: the number of decimal places
-        :param thousands_seperator: the thousands seperator
-        :param decimal_seperator: the decimal seperator
+        :param thousands_separator: the thousands separator
+        :param decimal_separator: the decimal separator
         :return: the formatted value as a string
         """
 
         # Float slider
         if is_float:
             string_format = '{:,.' + str(decimals) + 'f}'
-            temp_thousands_seperator = '0888019ca0faa9774a728c864e248749'
-            temp_decimal_seperator = 'f6e9eccf7256112eccd52f41f1fded3f'
+            temp_thousands_separator = '0888019ca0faa9774a728c864e248749'
+            temp_decimal_separator = 'f6e9eccf7256112eccd52f41f1fded3f'
             return string_format.format(value)\
-                .replace(',', temp_thousands_seperator)\
-                .replace('.', temp_decimal_seperator)\
-                .replace(temp_thousands_seperator, thousands_seperator)\
-                .replace(temp_decimal_seperator, decimal_seperator)
+                .replace(',', temp_thousands_separator)\
+                .replace('.', temp_decimal_separator)\
+                .replace(temp_thousands_separator, thousands_separator)\
+                .replace(temp_decimal_separator, decimal_separator)
 
         # Int slider
         string_format = '{:,.0f}'
-        return string_format.format(int(value)).replace(',', thousands_seperator)
+        return string_format.format(int(value)).replace(',', thousands_separator)
 
     def __emit_value_changed(self):
         """Emit signal that the value of the slider has changed"""

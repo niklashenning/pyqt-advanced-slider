@@ -82,7 +82,7 @@ class Window(QMainWindow):
         self.slider_2.setDecimals(2)  # Show 2 decimal places
         self.slider_2.setPrefix('~')  # Add slider value prefix
         self.slider_2.setSuffix(' €')  # Add slider value suffix
-        self.slider_2.setThousandsSeperator(',')  # Add thousands seperator
+        self.slider_2.setThousandsSeparator(',')  # Add thousands separator
         self.slider_2.setSingleStep(50)  # Set custom single step value
         self.slider_2.setPageStep(250)  # Set custom page step value
         self.slider_2.setBorderRadius(3)  # Rounded borders
