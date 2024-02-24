@@ -289,6 +289,16 @@ class Slider(QWidget):
         else:
             return int(self.value)
 
+    def getValueFormatted(self) -> str:
+        """Get the current formatted value shown on the slider
+
+        :return: the formatted value string
+        """
+
+        formatted_value = self.__format_value(self.value, self.is_float, self.decimals,
+                                              self.thousands_separator, self.decimal_separator)
+        return self.prefix + formatted_value + self.suffix
+
     def setValue(self, value: int | float):
         """Set the value of the slider
 
