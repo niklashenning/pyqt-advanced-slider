@@ -36,8 +36,20 @@ class Window(QMainWindow):
         print(value)
 ```
 
+You can also set the minimum and maximum of the slider individually with the `setMinimum` and `setMaximum` methods:
+```python
+demo_slider.setMinimum(-50)
+demo_slider.setMaximum(100)
+```
+
+The `getValue` method returns the current value as an int or float while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
+```python
+value = demo_slider.getValue()  # 2500.0
+value_formatted = demo_slider.getValueFormatted()  # '~2,500.00 €'
+```
+
 > [!NOTE]
-> When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an int if the slider is currently an int slider, or a float if the slider is currently a float slider.
+> When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled for the slider.
 
 ## Customization
 
@@ -52,6 +64,9 @@ demo_slider.setDecimals(2)  # Default: 1
 demo_slider.setPrefix('~')  # Default: empty string
 demo_slider.setSuffix(' €')  # Default: empty string
 ```
+
+> **EXAMPLE**: <br>The value `100` formatted with `~` as the prefix and `°` as the suffix would be shown as `~100°`
+
 
 * **Customizing the formatting of the value shown on the slider:**
 ```python
@@ -94,6 +109,8 @@ font.setBold(True)
 
 demo_slider.setFont(font)
 ```
+
+More in-depth examples can be found in the [examples](examples) folder
 
 ## License
 This software is licensed under the [MIT license](LICENSE).
