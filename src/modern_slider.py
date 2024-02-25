@@ -33,6 +33,8 @@ class Slider(QWidget):
         self.accent_color = QtGui.QColor('#0078D7')
         self.border_color = QtGui.QColor('#D1CFD3')
         self.border_radius = 0
+        self.keyboard_input_enabled = True
+        self.mouse_wheel_input_enabled = True
 
         self.font = QtGui.QFont()
         self.font.setFamily('Arial')
@@ -123,6 +125,10 @@ class Slider(QWidget):
         :param event: the event sent by PyQt
         """
 
+        # Check if mouse wheel input is enabled
+        if not self.mouse_wheel_input_enabled:
+            return
+
         # Scrolled up
         if event.angleDelta().y() > 0:
             if self.single_step > 0:
@@ -150,6 +156,10 @@ class Slider(QWidget):
 
         :param event: the event sent by PyQt
         """
+
+        # Check if keyboard input is enabled
+        if not self.keyboard_input_enabled:
+            return
 
         # Home key
         if event.key() == Qt.Key_Home:
@@ -536,7 +546,6 @@ class Slider(QWidget):
         :param r: red
         :param g: green
         :param b: blue
-        :param a: alpha
         """
 
         self.text_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
@@ -661,6 +670,38 @@ class Slider(QWidget):
         """
 
         self.font = font
+
+    def isKeyboardInputEnabled(self) -> bool:
+        """Get whether keyboard input is enabled
+
+        :return: whether keyboard input is enabled
+        """
+
+        return self.keyboard_input_enabled
+
+    def setKeyboardInputEnabled(self, keyboard_input_enabled: bool):
+        """Set whether keyboard input should be enabled
+
+        :param keyboard_input_enabled: whether keyboard input should be enabled
+        """
+
+        self.keyboard_input_enabled = keyboard_input_enabled
+
+    def isMouseWheelInputEnabled(self) -> bool:
+        """Get whether mouse wheel input is enabled
+
+        :return: whether mouse wheel input is enabled
+        """
+
+        return self.mouse_wheel_input_enabled
+
+    def setMouseWheelInputEnabled(self, mouse_wheel_input_enabled: bool):
+        """Set whether mouse wheel input should be enabled
+
+        :param mouse_wheel_input_enabled: whether mouse wheel input should be enabled
+        """
+
+        self.mouse_wheel_input_enabled = mouse_wheel_input_enabled
 
     def __update_stylesheet(self):
         """Update the stylesheet with the current values"""
