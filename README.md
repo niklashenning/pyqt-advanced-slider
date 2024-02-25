@@ -42,14 +42,13 @@ demo_slider.setMinimum(-50)
 demo_slider.setMaximum(100)
 ```
 
-The `getValue` method returns the current value as an int or float while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
+The `getValue` method returns the current value while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
 ```python
 value = demo_slider.getValue()  # 2500.0
 value_formatted = demo_slider.getValueFormatted()  # '~2,500.00 €'
 ```
 
-> [!NOTE]
-> When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled for the slider.
+> **NOTE:** <br>When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
 
 ## Customization
 
@@ -65,7 +64,7 @@ demo_slider.setPrefix('~')  # Default: empty string
 demo_slider.setSuffix(' €')  # Default: empty string
 ```
 
-> **EXAMPLE**: <br>The value `100` formatted with `~` as the prefix and `°` as the suffix would be shown as `~100°`
+> **EXAMPLE:** <br>The value `100` formatted with `~` as the prefix and `°` as the suffix would be shown as `~100°`
 
 
 * **Customizing the formatting of the value shown on the slider:**
@@ -73,7 +72,7 @@ demo_slider.setSuffix(' €')  # Default: empty string
 demo_slider.setDecimalSeparator(',')  # Default: '.'
 demo_slider.setThousandsSeparator('.')  # Default: empty string
 ```
-> **EXAMPLE**: <br>The value `1052.17` formatted with `,` as the decimal separator and `.` as the thousands separator would be `1.052,17`
+> **EXAMPLE:** <br>The value `1052.17` formatted with `,` as the decimal separator and `.` as the thousands separator would be `1.052,17`
 
 * **Changing how much the value is incremented or decremented on keyboard and mouse inputs:**
 ```python
@@ -90,23 +89,33 @@ demo_slider.setPageStep(25)  # Default: 0
 demo_slider.showValue(False)  # Default: True
 ```
 
-* **Setting the text color, background color, accent color, border color, border radius, and font:**
+* **Disabling keyboard and mouse wheel input:**
 ```python
-# Making corners rounded
-demo_slider.setBorderRadius(3)  # Default: 0
+demo_slider.setKeyboardInputEnabled(False)  # Default: True
+demo_slider.setMouseWheelInputEnabled(False)  # Default: True
+```
 
+* **Setting the text color, background color, accent color, border color, and border radius:**
+```python
 # Setting custom colors (you can choose between rgb and hex values for each color)
 demo_slider.setTextColorHex('#000000')
 demo_slider.setBackgroundColorHex('#FFFFFF')
 demo_slider.setAccentColorRgb(100, 100, 100)
 demo_slider.setBorderColorRgb(0, 0, 0)
 
-# Setting custom font
+# Making corners rounded
+demo_slider.setBorderRadius(3)  # Default: 0
+```
+
+* **Setting a custom font:**
+```python
+# Init font
 font = QtGui.QFont()
 font.setFamily('Times')
 font.setPointSize(10)
 font.setBold(True)
 
+# Set font
 demo_slider.setFont(font)
 ```
 
