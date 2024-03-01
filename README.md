@@ -97,11 +97,11 @@ demo_slider.setMouseWheelInputEnabled(False)  # Default: True
 
 * **Setting the text color, background color, accent color, border color, and border radius:**
 ```python
-# Setting custom colors (you can choose between rgb and hex values for each color)
-demo_slider.setTextColorHex('#000000')
-demo_slider.setBackgroundColorHex('#FFFFFF')
-demo_slider.setAccentColorRgb(100, 100, 100)
-demo_slider.setBorderColorRgb(0, 0, 0)
+# Setting custom colors
+demo_slider.setTextColor(QColor('#000000'))
+demo_slider.setBackgroundColor(QColor('#FFFFFF'))
+demo_slider.setAccentColor(QColor.fromRgb(100, 100, 100))
+demo_slider.setBorderColor(QColor.fromRgb(0, 0, 0))
 
 # Making corners rounded
 demo_slider.setBorderRadius(3)  # Default: 0
@@ -110,7 +110,7 @@ demo_slider.setBorderRadius(3)  # Default: 0
 * **Setting a custom font:**
 ```python
 # Init font
-font = QtGui.QFont()
+font = QFont()
 font.setFamily('Times')
 font.setPointSize(10)
 font.setBold(True)
