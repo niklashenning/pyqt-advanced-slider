@@ -1,5 +1,5 @@
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal, Qt, QRect
+from PyQt5.QtGui import QColor, QFont, QPixmap, QBrush, QPen, QPainter, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QLabel
 
 
@@ -28,15 +28,15 @@ class Slider(QWidget):
         self.prefix = ''
         self.suffix = ''
         self.showing_value = True
-        self.text_color = QtGui.QColor('#000000')
-        self.background_color = QtGui.QColor('#D6D6D6')
-        self.accent_color = QtGui.QColor('#0078D7')
-        self.border_color = QtGui.QColor('#D1CFD3')
+        self.text_color = QColor('#000000')
+        self.background_color = QColor('#D6D6D6')
+        self.accent_color = QColor('#0078D7')
+        self.border_color = QColor('#D1CFD3')
         self.border_radius = 0
         self.keyboard_input_enabled = True
         self.mouse_wheel_input_enabled = True
 
-        self.font = QtGui.QFont()
+        self.font = QFont()
         self.font.setFamily('Arial')
         self.font.setPointSize(9)
         self.font.setBold(True)
@@ -54,8 +54,8 @@ class Slider(QWidget):
         self.position_x = None
 
         # Pixmap for drawing the slider stuff
-        self.canvas = QtGui.QPixmap(self.width(), self.height())
-        self.canvas.fill(QtGui.QColor(self.background_color))
+        self.canvas = QPixmap(self.width(), self.height())
+        self.canvas.fill(QColor(self.background_color))
         self.slider.setPixmap(self.canvas)
 
         # Make focusable
@@ -222,24 +222,24 @@ class Slider(QWidget):
 
         # Redraw canvas
         self.slider.setFixedSize(self.width(), self.height())
-        self.canvas = QtGui.QPixmap(self.width(), self.height())
-        self.canvas.fill(QtGui.QColor(self.background_color))
+        self.canvas = QPixmap(self.width(), self.height())
+        self.canvas.fill(QColor(self.background_color))
         self.slider.setPixmap(self.canvas)
 
         # Init painter
-        painter = QtGui.QPainter(self.slider.pixmap())
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter = QPainter(self.slider.pixmap())
+        painter.setRenderHint(QPainter.Antialiasing)
         painter.setFont(self.font)
 
         # Init pen
-        pen = QtGui.QPen()
+        pen = QPen()
         pen.setWidth(1)
-        pen.setColor(QtGui.QColor(self.accent_color))
+        pen.setColor(QColor(self.accent_color))
         painter.setPen(pen)
 
         # Init brush
-        brush = QtGui.QBrush()
-        brush.setColor(QtGui.QColor(self.accent_color))
+        brush = QBrush()
+        brush.setColor(QColor(self.accent_color))
         brush.setStyle(Qt.SolidPattern)
         painter.setBrush(brush)
 
@@ -248,7 +248,7 @@ class Slider(QWidget):
             # Stuff needed for drawing the rect
             width = self.position_x - 2 if self.position_x + 2 >= self.width() else self.position_x
             height = self.height() - 2
-            rect = QtCore.QRect(0, 1, width, height)
+            rect = QRect(0, 1, width, height)
             # Draw rect
             painter.drawRoundedRect(rect, self.border_radius, self.border_radius)
 
@@ -264,7 +264,7 @@ class Slider(QWidget):
             value_string_full = self.prefix + value_string + self.suffix
 
             # Get string width and height for current font
-            metrics = QtGui.QFontMetrics(self.font)
+            metrics = QFontMetrics(self.font)
             text_width = metrics.width(value_string_full)
             text_height = metrics.tightBoundingRect(value_string_full).height()
 
@@ -515,15 +515,15 @@ class Slider(QWidget):
 
         return self.showing_value
 
-    def showValue(self, show_value: bool):
+    def showValue(self, on: bool):
         """Set whether the value should be shown
 
-        :param show_value: whether the value should be shown
+        :param on: whether the value should be shown
         """
 
-        self.showing_value = show_value
+        self.showing_value = on
 
-    def getTextColor(self) -> QtGui.QColor:
+    def getTextColor(self) -> QColor:
         """Get the text color of the slider
 
         :return: the current text color
@@ -531,27 +531,16 @@ class Slider(QWidget):
 
         return self.text_color
 
-    def setTextColorHex(self, text_color_hex: str):
-        """Set the text color of the slider with given hex value
+    def setTextColor(self, color: QColor):
+        """Set the text color of the slider
 
-        :param text_color_hex: the hex value
+        :param color: the new color
         """
 
-        self.text_color = QtGui.QColor(text_color_hex)
+        self.text_color = color
         self.update()
 
-    def setTextColorRgb(self, r: int, g: int, b: int):
-        """Set the text color of the slider with given rgb values
-
-        :param r: red
-        :param g: green
-        :param b: blue
-        """
-
-        self.text_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
-        self.update()
-
-    def getBackgroundColor(self) -> QtGui.QColor:
+    def getBackgroundColor(self) -> QColor:
         """Get the background color of the slider
 
         :return: the current background color
@@ -559,27 +548,16 @@ class Slider(QWidget):
 
         return self.background_color
 
-    def setBackgroundColorHex(self, background_color_hex: str):
-        """Set the background color of the slider with given hex value
+    def setBackgroundColor(self, color: QColor):
+        """Set the background color of the slider
 
-        :param background_color_hex: the hex value
+        :param color: the new color
         """
 
-        self.background_color = QtGui.QColor(background_color_hex)
+        self.background_color = color
         self.update()
 
-    def setBackgroundColorRgb(self, r: int, g: int, b: int):
-        """Set the background color of the slider with given rgb values
-
-        :param r: red
-        :param g: green
-        :param b: blue
-        """
-
-        self.background_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
-        self.update()
-
-    def getAccentColor(self) -> QtGui.QColor:
+    def getAccentColor(self) -> QColor:
         """Get the accent color of the slider
 
         :return: the current accent color
@@ -587,27 +565,16 @@ class Slider(QWidget):
 
         return self.accent_color
 
-    def setAccentColorHex(self, accent_color_hex: str):
-        """Set the accent color of the slider with given hex value
+    def setAccentColor(self, color: QColor):
+        """Set the accent color of the slider
 
-        :param accent_color_hex: the hex value
+        :param color: the new color
         """
 
-        self.accent_color = QtGui.QColor(accent_color_hex)
+        self.accent_color = color
         self.update()
 
-    def setAccentColorRgb(self, r: int, g: int, b: int):
-        """Set the accent color of the slider with given rgb values
-
-        :param r: red
-        :param g: green
-        :param b: blue
-        """
-
-        self.accent_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
-        self.update()
-
-    def getBorderColor(self) -> QtGui.QColor:
+    def getBorderColor(self) -> QColor:
         """Get the border color of the slider
 
         :return: the current border color
@@ -615,25 +582,13 @@ class Slider(QWidget):
 
         return self.border_color
 
-    def setBorderColorHex(self, border_color_hex: str):
-        """Set the border color of the slider with given hex value
+    def setBorderColor(self, color: QColor):
+        """Set the border color of the slider
 
-        :param border_color_hex: the hex value
+        :param color: the new color
         """
 
-        self.border_color = QtGui.QColor(border_color_hex)
-        self.__update_stylesheet()
-        self.update()
-
-    def setBorderColorRgb(self, r: int, g: int, b: int):
-        """Set the border color of the slider with given rgb values
-
-        :param r: red
-        :param g: green
-        :param b: blue
-        """
-
-        self.border_color = QtGui.QColor.fromRgb(QtGui.qRgb(r, g, b))
+        self.border_color = color
         self.__update_stylesheet()
         self.update()
 
@@ -655,7 +610,7 @@ class Slider(QWidget):
         self.__update_stylesheet()
         self.update()
 
-    def getFont(self) -> QtGui.QFont:
+    def getFont(self) -> QFont:
         """Get font of the slider
 
         :return: the current font
@@ -663,7 +618,7 @@ class Slider(QWidget):
 
         return self.font
 
-    def setFont(self, font: QtGui.QFont):
+    def setFont(self, font: QFont):
         """Set font of the slider
 
         :param font: the new font
@@ -679,13 +634,13 @@ class Slider(QWidget):
 
         return self.keyboard_input_enabled
 
-    def setKeyboardInputEnabled(self, keyboard_input_enabled: bool):
+    def setKeyboardInputEnabled(self, enabled: bool):
         """Set whether keyboard input should be enabled
 
-        :param keyboard_input_enabled: whether keyboard input should be enabled
+        :param enabled: whether keyboard input should be enabled
         """
 
-        self.keyboard_input_enabled = keyboard_input_enabled
+        self.keyboard_input_enabled = enabled
 
     def isMouseWheelInputEnabled(self) -> bool:
         """Get whether mouse wheel input is enabled
@@ -695,20 +650,20 @@ class Slider(QWidget):
 
         return self.mouse_wheel_input_enabled
 
-    def setMouseWheelInputEnabled(self, mouse_wheel_input_enabled: bool):
+    def setMouseWheelInputEnabled(self, enabled: bool):
         """Set whether mouse wheel input should be enabled
 
-        :param mouse_wheel_input_enabled: whether mouse wheel input should be enabled
+        :param enabled: whether mouse wheel input should be enabled
         """
 
-        self.mouse_wheel_input_enabled = mouse_wheel_input_enabled
+        self.mouse_wheel_input_enabled = enabled
 
     def __update_stylesheet(self):
         """Update the stylesheet with the current values"""
 
         border_color_hex = self.border_color.name()
-        self.slider.setStyleSheet('QLabel {border: 1px solid ' + border_color_hex +
-                                  '; border-radius: ' + str(self.border_radius) + 'px;}')
+        self.slider.setStyleSheet('border: 1px solid {}; border-radius: {}px;'
+                                  .format(border_color_hex, self.border_radius))
 
     def __get_value_from_position_x(self, position_x: int) -> int | float:
         """Get slider value from position_x value
@@ -802,11 +757,11 @@ class Slider(QWidget):
             string_format = '{:,.' + str(decimals) + 'f}'
             temp_thousands_separator = '0888019ca0faa9774a728c864e248749'
             temp_decimal_separator = 'f6e9eccf7256112eccd52f41f1fded3f'
-            return string_format.format(value)\
-                .replace(',', temp_thousands_separator)\
-                .replace('.', temp_decimal_separator)\
-                .replace(temp_thousands_separator, thousands_separator)\
-                .replace(temp_decimal_separator, decimal_separator)
+            return (string_format.format(value)
+                    .replace(',', temp_thousands_separator)
+                    .replace('.', temp_decimal_separator)
+                    .replace(temp_thousands_separator, thousands_separator)
+                    .replace(temp_decimal_separator, decimal_separator))
 
         # Int slider
         string_format = '{:,.0f}'
