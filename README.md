@@ -36,19 +36,19 @@ class Window(QMainWindow):
         print(value)
 ```
 
-You can also set the minimum and maximum of the slider individually with the `setMinimum` and `setMaximum` methods:
+You can also set the minimum and maximum of the slider individually with the `setMinimum()` and `setMaximum()` methods:
 ```python
 demo_slider.setMinimum(-50)
 demo_slider.setMaximum(100)
 ```
 
-The `getValue` method returns the current value while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
+The `getValue()` method returns the current value while the `getValueFormatted()` method returns the value as the formatted string that is being displayed on the slider:
 ```python
 value = demo_slider.getValue()  # 2500.0
 value_formatted = demo_slider.getValueFormatted()  # '~2,500.00 €'
 ```
 
-> **NOTE:** <br>When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
+> **NOTE:** <br>When getting the value of the slider using the `getValue()` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
 
 ## Customization
 
