@@ -1,12 +1,12 @@
-from PyQt5.QtCore import pyqtSignal, Qt, QRect
-from PyQt5.QtGui import QColor, QFont, QPixmap, QBrush, QPen, QPainter, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QLabel
+from qtpy.QtCore import Signal, Qt, QRect
+from qtpy.QtGui import QColor, QFont, QPixmap, QBrush, QPen, QPainter, QFontMetrics
+from qtpy.QtWidgets import QWidget, QLabel
 
 
 class Slider(QWidget):
 
     # Signal (object, so it can send both int and float)
-    valueChanged = pyqtSignal(object)
+    valueChanged = Signal(object)
 
     def __init__(self, parent=None):
         """Create a new Slider instance
@@ -59,7 +59,7 @@ class Slider(QWidget):
         self.slider.setPixmap(self.canvas)
 
         # Make focusable
-        self.setFocusPolicy(Qt.ClickFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
         # Update stylesheet
         self.__update_stylesheet()
@@ -74,7 +74,7 @@ class Slider(QWidget):
         :param event: the event sent by PyQt
         """
 
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.left_mouse_pressed = True
             # Set value and position
             self.value = self.__get_value_from_position_x(event.pos().x())
@@ -91,7 +91,7 @@ class Slider(QWidget):
         :param event: the event sent by PyQt
         """
 
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.left_mouse_pressed = False
             # Set value and position
             self.value = self.__get_value_from_position_x(event.pos().x())
@@ -162,15 +162,15 @@ class Slider(QWidget):
             return
 
         # Home key
-        if event.key() == Qt.Key_Home:
+        if event.key() == Qt.Key.Key_Home:
             self.setValue(self.minimum)
 
         # End key
-        elif event.key() == Qt.Key_End:
+        elif event.key() == Qt.Key.Key_End:
             self.setValue(self.maximum)
 
         # Arrow key (up or right)
-        elif event.key() == Qt.Key_Right or event.key() == Qt.Key_Up:
+        elif event.key() == Qt.Key.Key_Right or event.key() == Qt.Key.Key_Up:
             if self.single_step > 0:
                 self.setValue(self.__clamp_value(self.value + self.single_step))
             else:
@@ -178,7 +178,7 @@ class Slider(QWidget):
                 self.setValue(self.__clamp_value(self.value + single_step))
 
         # Arrow key (down or left)
-        elif event.key() == Qt.Key_Left or event.key() == Qt.Key_Down:
+        elif event.key() == Qt.Key.Key_Left or event.key() == Qt.Key.Key_Down:
             if self.single_step > 0:
                 self.setValue(self.__clamp_value(self.value - self.single_step))
             else:
@@ -186,7 +186,7 @@ class Slider(QWidget):
                 self.setValue(self.__clamp_value(self.value - single_step))
 
         # PageUp key
-        elif event.key() == Qt.Key_PageUp:
+        elif event.key() == Qt.Key.Key_PageUp:
             if self.page_step > 0:
                 self.setValue(self.__clamp_value(self.value + self.page_step))
             else:
@@ -194,7 +194,7 @@ class Slider(QWidget):
                 self.setValue(self.__clamp_value(self.value + page_step))
 
         # PageDown key
-        elif event.key() == Qt.Key_PageDown:
+        elif event.key() == Qt.Key.Key_PageDown:
             if self.page_step > 0:
                 self.setValue(self.__clamp_value(self.value - self.page_step))
             else:
@@ -224,11 +224,10 @@ class Slider(QWidget):
         self.slider.setFixedSize(self.width(), self.height())
         self.canvas = QPixmap(self.width(), self.height())
         self.canvas.fill(QColor(self.background_color))
-        self.slider.setPixmap(self.canvas)
 
         # Init painter
-        painter = QPainter(self.slider.pixmap())
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter = QPainter(self.canvas)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setFont(self.font)
 
         # Init pen
@@ -240,7 +239,7 @@ class Slider(QWidget):
         # Init brush
         brush = QBrush()
         brush.setColor(QColor(self.accent_color))
-        brush.setStyle(Qt.SolidPattern)
+        brush.setStyle(Qt.BrushStyle.SolidPattern)
         painter.setBrush(brush)
 
         # Draw slider value rect
@@ -282,6 +281,9 @@ class Slider(QWidget):
 
             # Draw value
             painter.drawText(text_pos_x, text_pos_y, value_string_full)
+
+        # Set updated canvas
+        self.slider.setPixmap(self.canvas)
 
         # End painter
         painter.end()
