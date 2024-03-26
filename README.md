@@ -1,5 +1,12 @@
-# pyqt-modern-slider
-A clean and customizable PyQt5 slider widget for integer and float values
+# PyQt Modern Slider
+
+[![PyPI](https://img.shields.io/badge/pypi-v1.1.0-blue)](https://github.com/niklashenning/pyqt-modern-slider)
+[![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/niklashenning/pyqt-modern-slider)
+[![Build](https://img.shields.io/badge/build-passing-neon)](https://github.com/niklashenning/pyqt-modern-slider)
+[![Coverage](https://img.shields.io/badge/coverage-80%25-green)](https://github.com/niklashenning/pyqt-modern-slider)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+A clean and customizable int and float slider widget for PyQt and PySide
 
 ![pyqt-modern-slider](https://github.com/niklashenning/pyqt-modern-slider/assets/58544929/b741e06c-1efa-44c8-8c7e-e35ca1c0f348)
 
@@ -9,27 +16,30 @@ A clean and customizable PyQt5 slider widget for integer and float values
 * Customizable decimal places
 * Customizable prefix and suffix
 * Customizable decimal separator and thousands separator
-* Supports keyboard and mouse wheel input
+* Supports keyboard and mouse wheel inputs
 * Modern and customizable UI
+* Works with `PyQt5`, `PyQt6`, `PySide2`, and `PySide6`
 
 ## Installation
-Download the **modern_slider.py** file from the **src** folder and add it to your project
+```
+pip install pyqt-modern-slider
+```
 
 ## Usage
 Import the `Slider` class and add it to your window like any other PyQt Widget:
 ```python
-from PyQt5.QtWidgets import QMainWindow
-from modern_slider import Slider
+from PyQt6.QtWidgets import QMainWindow
+from pyqt_modern_slider import Slider
 
 
 class Window(QMainWindow):
     def __init__(self):
         super().__init__(parent=None)
 
-        demo_slider = Slider(self)  # Add slider
-        demo_slider.setRange(-50, 100)  # Set min and max
-        demo_slider.setValue(25)  # Set value
-        demo_slider.valueChanged.connect(self.slider_value_changed)  # Connect change event
+        slider = Slider(self)  # Add slider
+        slider.setRange(-50, 100)  # Set min and max
+        slider.setValue(25)  # Set value
+        slider.valueChanged.connect(self.slider_value_changed)  # Connect change event
     
     # Called every time the slider value changes
     def slider_value_changed(self, value):
@@ -38,14 +48,14 @@ class Window(QMainWindow):
 
 You can also set the minimum and maximum of the slider individually with the `setMinimum` and `setMaximum` methods:
 ```python
-demo_slider.setMinimum(-50)
-demo_slider.setMaximum(100)
+slider.setMinimum(-50)  # Default: 0
+slider.setMaximum(100)  # Default: 10
 ```
 
 The `getValue` method returns the current value while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
 ```python
-value = demo_slider.getValue()  # 2500.0
-value_formatted = demo_slider.getValueFormatted()  # '~2,500.00 €'
+value = slider.getValue()  # 2500.0
+value_formatted = slider.getValueFormatted()  # e.g. '~2,500.00 €'
 ```
 
 > **NOTE:** <br>When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
@@ -54,14 +64,14 @@ value_formatted = demo_slider.getValueFormatted()  # '~2,500.00 €'
 
 * **Making the slider a float slider:**
 ```python
-demo_slider.setFloat(True)  # Default: false
-demo_slider.setDecimals(2)  # Default: 1
+slider.setFloat(True)  # Default: False
+slider.setDecimals(2)  # Default: 1
 ```
 
 * **Adding a prefix and a suffix:**
 ```python
-demo_slider.setPrefix('~')  # Default: empty string
-demo_slider.setSuffix(' €')  # Default: empty string
+slider.setPrefix('~')   # Default: empty string
+slider.setSuffix(' €')  # Default: empty string
 ```
 
 > **EXAMPLE:** <br>The value `100` formatted with `~` as the prefix and `°` as the suffix would be shown as `~100°`
@@ -69,16 +79,16 @@ demo_slider.setSuffix(' €')  # Default: empty string
 
 * **Customizing the formatting of the value shown on the slider:**
 ```python
-demo_slider.setDecimalSeparator(',')  # Default: '.'
-demo_slider.setThousandsSeparator('.')  # Default: empty string
+slider.setDecimalSeparator(',')    # Default: '.'
+slider.setThousandsSeparator('.')  # Default: empty string
 ```
 > **EXAMPLE:** <br>The value `1052.17` formatted with `,` as the decimal separator and `.` as the thousands separator would be `1.052,17`
 
 * **Changing how much the value is incremented or decremented on keyboard and mouse inputs:**
 ```python
 # If left default, the single step and page step will be 1% and 5% of the slider's value range
-demo_slider.setSingleStep(10)  # Default: 0
-demo_slider.setPageStep(25)  # Default: 0
+slider.setSingleStep(10)  # Default: 0
+slider.setPageStep(25)    # Default: 0
 ```
 
 > **SINGLE STEP:** Increment or decrement of the value when the slider is scrolled or the arrow keys are pressed<br>
@@ -86,25 +96,26 @@ demo_slider.setPageStep(25)  # Default: 0
 
 * **Hiding the value on the slider completely:**
 ```python
-demo_slider.showValue(False)  # Default: True
+slider.showValue(False)  # Default: True
 ```
 
-* **Disabling keyboard and mouse wheel input:**
+* **Enabling or disabling keyboard and mouse wheel input:**
 ```python
-demo_slider.setKeyboardInputEnabled(False)  # Default: True
-demo_slider.setMouseWheelInputEnabled(False)  # Default: True
+slider.setKeyboardInputEnabled(False)    # Default: True
+slider.setMouseWheelInputEnabled(False)  # Default: True
 ```
 
-* **Setting the text color, background color, accent color, border color, and border radius:**
+* **Setting custom colors:**
 ```python
-# Setting custom colors
-demo_slider.setTextColor(QColor('#000000'))
-demo_slider.setBackgroundColor(QColor('#FFFFFF'))
-demo_slider.setAccentColor(QColor.fromRgb(100, 100, 100))
-demo_slider.setBorderColor(QColor.fromRgb(0, 0, 0))
+slider.setTextColor(QColor('#0F0F0F'))                # Default: #000000
+slider.setBackgroundColor(QColor('#FFFFFF'))          # Default: #D6D6D6
+slider.setAccentColor(QColor.fromRgb(100, 100, 100))  # Default: #0078D7
+slider.setBorderColor(QColor.fromRgb(0, 0, 0))        # Default: #D1CFD3
+```
 
-# Making corners rounded
-demo_slider.setBorderRadius(3)  # Default: 0
+* **Making the corners rounded:**
+```python
+slider.setBorderRadius(3)  # Default: 0
 ```
 
 * **Setting a custom font:**
@@ -116,10 +127,22 @@ font.setPointSize(10)
 font.setBold(True)
 
 # Set font
-demo_slider.setFont(font)
+slider.setFont(font)
 ```
 
-More in-depth examples can be found in the [examples](examples) folder
+Examples for PyQt5, PyQt6, and PySide6 can be found in the [examples](examples) folder.
+
+## Running Tests
+Install the required test dependencies [pytest](https://github.com/pytest-dev/pytest), [pytest-qt](https://github.com/pytest-dev/pytest-qt), [coveragepy](https://github.com/nedbat/coveragepy), and [PyQt6](https://pypi.org/project/PyQt6):
+```
+pip install pytest pytest-qt coverage PyQt6
+```
+
+To run the tests with coverage, clone this repository, go into the main directory and run:
+```
+coverage run -m pytest
+coverage report --ignore-errors -m
+```
 
 ## License
 This software is licensed under the [MIT license](LICENSE).
