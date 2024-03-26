@@ -1,8 +1,8 @@
 import sys
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor, QColor
-from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QPushButton
-from src.modern_slider import Slider
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QCursor, QColor
+from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QPushButton
+from src.pyqt_modern_slider.modern_slider import Slider
 
 
 class Window(QMainWindow):
