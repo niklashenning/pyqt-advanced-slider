@@ -39,7 +39,7 @@ class Window(QMainWindow):
         # Close button
         self.close_button = QPushButton(self)
         self.close_button.setText('✕')
-        self.close_button.setFixedSize(23, 23)
+        self.close_button.setFixedSize(22, 22)
         self.close_button.move(331, 5)
         self.close_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.close_button.setObjectName('close_button')
