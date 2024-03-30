@@ -287,6 +287,16 @@ class Slider(QWidget):
         # End painter
         painter.end()
 
+    def getValuePosition(self) -> int:
+        """Get the position of the slider's value in px
+
+        :return: position
+        """
+
+        if self.__position_x is None:
+            return self.__get_position_x_from_value(self.__value)
+        return self.__position_x
+
     def getValue(self) -> int | float:
         """Get the current value of the slider
 
