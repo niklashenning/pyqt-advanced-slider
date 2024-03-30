@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, QPoint, QPointF, QEvent, QRect
+from PyQt6.QtCore import Qt, QPoint, QPointF, QRect
 from PyQt6.QtGui import QFont, QColor, QWheelEvent, QPaintEvent
 from PyQt6.QtTest import QTest
 from pytestqt.qt_compat import qt_api
@@ -39,6 +39,7 @@ def test_initial_values(qtbot):
     assert slider.isMouseWheelInputEnabled() == True
     assert slider.getFont() == default_font
     assert slider.getValue() == 0
+    assert slider.getValuePosition() == 0
 
 
 def test_set_range_min_max(qtbot):
@@ -638,6 +639,8 @@ def test_mouse_release(qtbot):
 
 
 def test_wheel_event_scroll_up_default_single_step(qtbot):
+    """Test scrolling up the mouse wheel with default single step"""
+
     slider = Slider()
     qtbot.addWidget(slider)
 
@@ -657,6 +660,8 @@ def test_wheel_event_scroll_up_default_single_step(qtbot):
 
 
 def test_wheel_event_scroll_up_custom_single_step(qtbot):
+    """Test scrolling up the mouse wheel with custom single step set"""
+
     slider = Slider()
     qtbot.addWidget(slider)
 
@@ -677,6 +682,8 @@ def test_wheel_event_scroll_up_custom_single_step(qtbot):
 
 
 def test_wheel_event_scroll_down_default_single_step(qtbot):
+    """Test scrolling down the mouse wheel with default single step"""
+
     slider = Slider()
     qtbot.addWidget(slider)
 
@@ -696,6 +703,8 @@ def test_wheel_event_scroll_down_default_single_step(qtbot):
 
 
 def test_wheel_event_scroll_down_custom_single_step(qtbot):
+    """Test scrolling down the mouse wheel with custom single step set"""
+
     slider = Slider()
     qtbot.addWidget(slider)
 
@@ -716,6 +725,8 @@ def test_wheel_event_scroll_down_custom_single_step(qtbot):
 
 
 def test_wheel_event_disabled_wheel_input(qtbot):
+    """Test scrolling the mouse wheel with mouse wheel input disabled"""
+
     slider = Slider()
     qtbot.addWidget(slider)
 
@@ -733,3 +744,76 @@ def test_wheel_event_disabled_wheel_input(qtbot):
     QTest.qWait(250)
 
     assert slider.getValue() == 5
+
+
+def test_paint_event_value_position(qtbot):
+    """Test the paint event and getting the value position"""
+
+    slider = Slider()
+    qtbot.addWidget(slider)
+    slider.setRange(-50, 50)
+    slider.setFixedWidth(200)
+
+    # Positive value
+    slider.setValue(5)
+
+    # Simulate paint event and wait for event to be handled
+    paint_event = QPaintEvent(QRect(0, 0, 0, 0))
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, paint_event)
+    QTest.qWait(250)
+
+    # Value position should be at 110 px
+    assert slider.getValuePosition() == 110
+
+    # Negative value
+    slider.setValue(-5)
+
+    # Simulate paint event and wait for event to be handled
+    paint_event = QPaintEvent(QRect(0, 0, 0, 0))
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, paint_event)
+    QTest.qWait(250)
+
+    # Value position should be at 90 px
+    assert slider.getValuePosition() == 90
+
+    # Positive minimum
+    slider.setRange(10, 110)
+    slider.setValue(25)
+
+    # Simulate paint event and wait for event to be handled
+    paint_event = QPaintEvent(QRect(0, 0, 0, 0))
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, paint_event)
+    QTest.qWait(250)
+
+    # Value position should be at 30 px
+    assert slider.getValuePosition() == 30
+
+    # Minimum 0
+    slider.setRange(0, 100)
+    slider.setValue(100)
+
+    # Simulate paint event and wait for event to be handled
+    paint_event = QPaintEvent(QRect(0, 0, 0, 0))
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, paint_event)
+    QTest.qWait(250)
+
+    # Value position should be at 200 px
+    assert slider.getValuePosition() == 200
+
+
+def test_paint_event_range_exception(qtbot):
+    """Test the paint event with an invalid range"""
+
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    with qtbot.capture_exceptions() as exceptions:
+        # Invalid slider range (min > max) -> should trigger RuntimeError
+        slider.setRange(50, -50)
+
+        # Simulate paint event and wait for event to be handled
+        paint_event = QPaintEvent(QRect(0, 0, 0, 0))
+        qt_api.QtWidgets.QApplication.instance().postEvent(slider, paint_event)
+        QTest.qWait(250)
+
+    assert len(exceptions) == 1
