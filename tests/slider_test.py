@@ -1,6 +1,9 @@
-from PyQt6.QtCore import Qt, QPoint
-from PyQt6.QtGui import QFont, QColor
+from PyQt6.QtCore import Qt, QPoint, QPointF, QEvent, QRect
+from PyQt6.QtGui import QFont, QColor, QWheelEvent, QPaintEvent
 from PyQt6.QtTest import QTest
+from pytestqt.qt_compat import qt_api
+
+
 from src.pyqt_modern_slider.modern_slider import Slider
 
 
@@ -632,3 +635,101 @@ def test_mouse_release(qtbot):
     slider.setValue(10)
     QTest.mouseRelease(slider, Qt.MouseButton.RightButton, pos=QPoint(slider.width() + 100, 1))
     assert slider.getValue() == 10
+
+
+def test_wheel_event_scroll_up_default_single_step(qtbot):
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    slider.setRange(-50, 50)
+    slider.setValue(5)
+
+    # Simulate mouse wheel event
+    wheel_event = QWheelEvent(QPointF(0, 0), slider.mapToGlobal(QPointF(0, 0)),
+                              QPoint(10, 10), QPoint(10, 10), Qt.MouseButton.NoButton,
+                              Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, wheel_event)
+
+    # Wait for event to be handled by slider before asserting
+    QTest.qWait(250)
+
+    assert slider.getValue() == 6
+
+
+def test_wheel_event_scroll_up_custom_single_step(qtbot):
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    slider.setRange(-50, 50)
+    slider.setValue(5)
+    slider.setSingleStep(5)
+
+    # Simulate mouse wheel event
+    wheel_event = QWheelEvent(QPointF(0, 0), slider.mapToGlobal(QPointF(0, 0)),
+                              QPoint(10, 10), QPoint(10, 10), Qt.MouseButton.NoButton,
+                              Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, wheel_event)
+
+    # Wait for event to be handled by slider before asserting
+    QTest.qWait(250)
+
+    assert slider.getValue() == 10
+
+
+def test_wheel_event_scroll_down_default_single_step(qtbot):
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    slider.setRange(-50, 50)
+    slider.setValue(5)
+
+    # Simulate mouse wheel event
+    wheel_event = QWheelEvent(QPointF(0, 0), slider.mapToGlobal(QPointF(0, 0)),
+                              QPoint(-10, -10), QPoint(-10, -10), Qt.MouseButton.NoButton,
+                              Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, wheel_event)
+
+    # Wait for event to be handled by slider before asserting
+    QTest.qWait(250)
+
+    assert slider.getValue() == 4
+
+
+def test_wheel_event_scroll_down_custom_single_step(qtbot):
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    slider.setRange(-50, 50)
+    slider.setValue(5)
+    slider.setSingleStep(5)
+
+    # Simulate mouse wheel event
+    wheel_event = QWheelEvent(QPointF(0, 0), slider.mapToGlobal(QPointF(0, 0)),
+                              QPoint(-10, -10), QPoint(-10, -10), Qt.MouseButton.NoButton,
+                              Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, wheel_event)
+
+    # Wait for event to be handled by slider before asserting
+    QTest.qWait(250)
+
+    assert slider.getValue() == 0
+
+
+def test_wheel_event_disabled_wheel_input(qtbot):
+    slider = Slider()
+    qtbot.addWidget(slider)
+
+    slider.setRange(-50, 50)
+    slider.setValue(5)
+    slider.setMouseWheelInputEnabled(False)
+
+    # Simulate mouse wheel event
+    wheel_event = QWheelEvent(QPointF(0, 0), slider.mapToGlobal(QPointF(0, 0)),
+                              QPoint(10, 10), QPoint(10, 10), Qt.MouseButton.NoButton,
+                              Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+    qt_api.QtWidgets.QApplication.instance().postEvent(slider, wheel_event)
+
+    # Wait for event to be handled by slider before asserting
+    QTest.qWait(250)
+
+    assert slider.getValue() == 5
