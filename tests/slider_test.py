@@ -4,7 +4,7 @@ from PyQt6.QtTest import QTest
 from pytestqt.qt_compat import qt_api
 
 
-from src.pyqt_modern_slider.modern_slider import Slider
+from src.pyqt_advanced_slider import Slider
 
 
 def test_initial_values(qtbot):
