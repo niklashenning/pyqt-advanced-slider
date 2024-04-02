@@ -1,14 +1,14 @@
-# PyQt Modern Slider
+# PyQt Advanced Slider
 
-[![PyPI](https://img.shields.io/badge/pypi-v1.1.0-blue)](https://github.com/niklashenning/pyqt-modern-slider)
-[![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/niklashenning/pyqt-modern-slider)
-[![Build](https://img.shields.io/badge/build-passing-neon)](https://github.com/niklashenning/pyqt-modern-slider)
-[![Coverage](https://img.shields.io/badge/coverage-80%25-green)](https://github.com/niklashenning/pyqt-modern-slider)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![PyPI](https://img.shields.io/badge/pypi-v1.1.0-blue)](https://pypi.org/project/pyqt-advanced-slider/)
+[![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/niklashenning/pyqt-advanced-slider)
+[![Build](https://img.shields.io/badge/build-passing-neon)](https://github.com/niklashenning/pyqt-advanced-slider)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-green)](https://github.com/niklashenning/pyqt-advanced-slider)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/niklashenning/pyqt-advanced-slider/blob/master/LICENSE)
 
 A clean and customizable int and float slider widget for PyQt and PySide
 
-![pyqt-modern-slider](https://github.com/niklashenning/pyqt-modern-slider/assets/58544929/b741e06c-1efa-44c8-8c7e-e35ca1c0f348)
+![pyqt-advanced-slider](https://github.com/niklashenning/pyqt-modern-slider/assets/58544929/b741e06c-1efa-44c8-8c7e-e35ca1c0f348)
 
 ## Features
 * Supports `int` and `float`
@@ -22,14 +22,14 @@ A clean and customizable int and float slider widget for PyQt and PySide
 
 ## Installation
 ```
-pip install pyqt-modern-slider
+pip install pyqt-advanced-slider
 ```
 
 ## Usage
 Import the `Slider` class and add it to your window like any other PyQt Widget:
 ```python
 from PyQt6.QtWidgets import QMainWindow
-from pyqt_modern_slider import Slider
+from pyqt_advanced_slider import Slider
 
 
 class Window(QMainWindow):
@@ -46,19 +46,19 @@ class Window(QMainWindow):
         print(value)
 ```
 
-You can also set the minimum and maximum of the slider individually with the `setMinimum` and `setMaximum` methods:
+You can also set the minimum and maximum of the slider individually with the `setMinimum()` and `setMaximum()` methods:
 ```python
 slider.setMinimum(-50)  # Default: 0
 slider.setMaximum(100)  # Default: 10
 ```
 
-The `getValue` method returns the current value while the `getValueFormatted` method returns the value as the formatted string that is being displayed on the slider:
+The `getValue()` method returns the current value while the `getValueFormatted()` method returns the value as the formatted string that is being displayed on the slider:
 ```python
 value = slider.getValue()  # 2500.0
 value_formatted = slider.getValueFormatted()  # e.g. '~2,500.00 €'
 ```
 
-> **NOTE:** <br>When getting the value of the slider using the `getValue` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
+> **NOTE:** <br>When getting the value of the slider using the `getValue()` method or by subscribing to the `valueChanged` event, it will either be an `int` or a `float`, depending on whether float values are enabled or disabled for the slider.
 
 ## Customization
 
@@ -132,8 +132,8 @@ slider.setFont(font)
 
 Examples for PyQt5, PyQt6, and PySide6 can be found in the [examples](examples) folder.
 
-## Running Tests
-Install the required test dependencies [pytest](https://github.com/pytest-dev/pytest), [pytest-qt](https://github.com/pytest-dev/pytest-qt), [coveragepy](https://github.com/nedbat/coveragepy), and [PyQt6](https://pypi.org/project/PyQt6):
+## Tests
+Installing the required test dependencies [pytest](https://github.com/pytest-dev/pytest), [pytest-qt](https://github.com/pytest-dev/pytest-qt), [coveragepy](https://github.com/nedbat/coveragepy), and [PyQt6](https://pypi.org/project/PyQt6):
 ```
 pip install pytest pytest-qt coverage PyQt6
 ```
