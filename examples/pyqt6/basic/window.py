@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QFormLayout, QWidget
-from src.pyqt_modern_slider.modern_slider import Slider
+from pyqt_advanced_slider import Slider
 
 
 class Window(QMainWindow):
@@ -8,7 +8,7 @@ class Window(QMainWindow):
 
         # Window settings
         self.resize(360, 145)
-        self.setWindowTitle('Modern Slider Demo')
+        self.setWindowTitle('Advanced Slider Demo')
 
         # Slider 1
         self.slider_1 = Slider(self)

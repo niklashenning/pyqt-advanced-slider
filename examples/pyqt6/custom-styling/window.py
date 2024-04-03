@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCursor, QColor
 from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QPushButton
-from src.pyqt_modern_slider.modern_slider import Slider
+from pyqt_advanced_slider import Slider
 
 
 class Window(QMainWindow):
@@ -14,8 +14,8 @@ class Window(QMainWindow):
         self.offset = None
 
         # Frameless transparent window
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setFixedSize(360, 200)
 
         # Widget as window so everything can be customized
@@ -31,7 +31,7 @@ class Window(QMainWindow):
 
         # Window title
         self.window_title = QLabel(self)
-        self.window_title.setText('Modern Slider Demo')
+        self.window_title.setText('Advanced Slider Demo')
         self.window_title.setFixedSize(150, 20)
         self.window_title.move(125, 6)
         self.window_title.setObjectName('window_title')
@@ -41,7 +41,7 @@ class Window(QMainWindow):
         self.close_button.setText('✕')
         self.close_button.setFixedSize(22, 22)
         self.close_button.move(331, 5)
-        self.close_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.close_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.close_button.setObjectName('close_button')
         self.close_button.clicked.connect(self.close_button_pressed)
 
@@ -142,14 +142,14 @@ class Window(QMainWindow):
 
     def mousePressEvent(self, event):
         # Window drag functionality
-        if event.button() == Qt.LeftButton and self.window_bar.geometry().contains(event.pos()):
+        if event.button() == Qt.MouseButton.LeftButton and self.window_bar.geometry().contains(event.pos()):
             self.offset = event.pos()
         else:
             super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         # Window drag functionality
-        if self.offset is not None and event.buttons() == Qt.LeftButton:
+        if self.offset is not None and event.buttons() == Qt.MouseButton.LeftButton:
             self.move(self.pos() + event.pos() - self.offset)
         else:
             super().mouseMoveEvent(event)

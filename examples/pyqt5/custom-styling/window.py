@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QColor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QPushButton
-from src.pyqt_modern_slider.modern_slider import Slider
+from pyqt_advanced_slider import Slider
 
 
 class Window(QMainWindow):
@@ -31,7 +31,7 @@ class Window(QMainWindow):
 
         # Window title
         self.window_title = QLabel(self)
-        self.window_title.setText('Modern Slider Demo')
+        self.window_title.setText('Advanced Slider Demo')
         self.window_title.setFixedSize(150, 20)
         self.window_title.move(125, 6)
         self.window_title.setObjectName('window_title')
