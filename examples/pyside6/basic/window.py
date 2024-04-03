@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow, QLabel
-from src.modern_slider import Slider
+from PySide6.QtWidgets import QMainWindow, QFormLayout, QWidget
+from pyqt_advanced_slider import Slider
 
 
 class Window(QMainWindow):
@@ -7,23 +7,8 @@ class Window(QMainWindow):
         super().__init__(parent=None)
 
         # Window settings
-        self.setFixedSize(360, 145)
-        self.setWindowTitle('Modern Slider Demo')
-
-        # Add labels for the hotkey pickers
-        self.label_1 = QLabel(self)
-        self.label_1.setText('Slider 1:')
-        self.label_1.move(48, 16)
-
-        # Label for slider 2
-        self.label_2 = QLabel(self)
-        self.label_2.setText('Slider 2:')
-        self.label_2.move(48, 53)
-
-        # Label for slider 3
-        self.label_3 = QLabel(self)
-        self.label_3.setText('Slider 3:')
-        self.label_3.move(48, 90)
+        self.resize(360, 145)
+        self.setWindowTitle('Advanced Slider Demo')
 
         # Slider 1
         self.slider_1 = Slider(self)
@@ -53,13 +38,26 @@ class Window(QMainWindow):
         self.slider_3.setSuffix('°')  # Add slider value suffix
         self.slider_3.valueChanged.connect(self.slider_3_value_changed)  # Connect change event
 
-        # Using fixed size and position for simplicity since this is just a demo
-        self.slider_1.setFixedSize(200, 18)
-        self.slider_1.move(110, 23)
-        self.slider_2.setFixedSize(200, 18)
-        self.slider_2.move(110, 60)
-        self.slider_3.setFixedSize(200, 18)
-        self.slider_3.move(110, 97)
+        # Set slider widths and heights
+        self.slider_1.setMinimumWidth(100)
+        self.slider_2.setMinimumWidth(100)
+        self.slider_3.setMinimumWidth(100)
+        self.slider_1.setFixedHeight(18)
+        self.slider_2.setFixedHeight(18)
+        self.slider_3.setFixedHeight(18)
+
+        # Form layout
+        form_layout = QFormLayout()
+        form_layout.addRow("Slider 1:", self.slider_1)
+        form_layout.addRow("Slider 2:", self.slider_2)
+        form_layout.addRow("Slider 3:", self.slider_3)
+        form_layout.setSpacing(20)
+        form_layout.setContentsMargins(20, 20, 20, 20)
+
+        # Set layout
+        central_widget = QWidget()
+        central_widget.setLayout(form_layout)
+        self.setCentralWidget(central_widget)
 
     def slider_1_value_changed(self, value):
         # Called when slider_1 value changes
