@@ -42,6 +42,7 @@ class Slider(QWidget):
 
         # Slider value
         self.__value = 0.0
+        self.__value_last_paint_event = None
 
         # Slider drag handling
         self.__left_mouse_pressed = False
@@ -62,9 +63,6 @@ class Slider(QWidget):
 
         # Update stylesheet
         self.__update_stylesheet()
-
-        # Call paint event
-        self.update()
 
     def mousePressEvent(self, event):
         """Event that happens every time a mouse button gets pressed on this widget.
@@ -207,12 +205,21 @@ class Slider(QWidget):
         :param event: event sent by PyQt
         """
 
+        # Only repaint if widget has been resized or value has changed
+        resized = self.__slider.size() != self.size()
+        value_changed = self.__value != self.__value_last_paint_event
+
+        if not resized and not value_changed:
+            return
+
+        self.__value_last_paint_event = self.__value
+
         # Check if range is valid
         if self.__minimum >= self.__maximum:
             raise RuntimeError('Slider minimum must be less than maximum')
 
         # Unset position_x if size changed
-        if self.__slider.size() != self.size():
+        if resized:
             self.__position_x = None
 
         # Calculate position based on value if position_x not set
