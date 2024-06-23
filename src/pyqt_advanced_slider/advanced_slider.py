@@ -274,7 +274,7 @@ class Slider(QWidget):
 
             # Get string width and height for current font
             metrics = QFontMetrics(self.__font)
-            text_width = metrics.width(value_string_full)
+            text_width = metrics.horizontalAdvance(value_string_full)
             text_height = metrics.tightBoundingRect(value_string_full).height()
 
             # Calculate text position x
