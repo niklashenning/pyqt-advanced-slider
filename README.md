@@ -1,9 +1,9 @@
 # PyQt Advanced Slider
 
-[![PyPI](https://img.shields.io/badge/pypi-v1.1.0-blue)](https://pypi.org/project/pyqt-advanced-slider/)
+[![PyPI](https://img.shields.io/badge/pypi-v1.1.1-blue)](https://pypi.org/project/pyqt-advanced-slider/)
 [![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/niklashenning/pyqt-advanced-slider)
 [![Build](https://img.shields.io/badge/build-passing-neon)](https://github.com/niklashenning/pyqt-advanced-slider)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-green)](https://github.com/niklashenning/pyqt-advanced-slider)
+[![Coverage](https://img.shields.io/badge/coverage-99%25-green)](https://github.com/niklashenning/pyqt-advanced-slider)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/niklashenning/pyqt-advanced-slider/blob/master/LICENSE)
 
 A clean and customizable int and float slider widget for PyQt and PySide

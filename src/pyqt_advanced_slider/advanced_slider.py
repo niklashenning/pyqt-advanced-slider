@@ -35,13 +35,14 @@ class Slider(QWidget):
         self.__border_radius = 0
         self.__keyboard_input_enabled = True
         self.__mouse_wheel_input_enabled = True
-        self.__font = QFont()
-        self.__font.setFamily('Arial')
-        self.__font.setPointSize(9)
-        self.__font.setBold(True)
+        self.__font = QFont('Arial', 9, QFont.Bold)
 
         # Slider value
         self.__value = 0.0
+        self.__value_last_paint_event = -1
+
+        # Flag to enable forcing a repaint when value has not changed
+        self.__force_repaint = False
 
         # Slider drag handling
         self.__left_mouse_pressed = False
@@ -63,9 +64,6 @@ class Slider(QWidget):
         # Update stylesheet
         self.__update_stylesheet()
 
-        # Call paint event
-        self.update()
-
     def mousePressEvent(self, event):
         """Event that happens every time a mouse button gets pressed on this widget.
         If the left mouse button is being pressed, calculate and set new value
@@ -78,10 +76,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def mouseReleaseEvent(self, event):
         """Event that happens every time a mouse button gets released on this widget.
@@ -95,10 +94,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def mouseMoveEvent(self, event):
         """Event that happens every time the mouse gets moved on this widget.
@@ -111,10 +111,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def wheelEvent(self, event):
         """Event that happens every time the mouse wheel is scrolled on this widget.
@@ -207,12 +208,22 @@ class Slider(QWidget):
         :param event: event sent by PyQt
         """
 
+        # Only repaint if widget has been resized or value has changed
+        resized = self.__slider.size() != self.size()
+        value_changed = self.__value != self.__value_last_paint_event
+
+        if not resized and not value_changed and not self.__force_repaint:
+            return
+
+        self.__force_repaint = False
+        self.__value_last_paint_event = self.__value
+
         # Check if range is valid
         if self.__minimum >= self.__maximum:
             raise RuntimeError('Slider minimum must be less than maximum')
 
         # Unset position_x if size changed
-        if self.__slider.size() != self.size():
+        if resized:
             self.__position_x = None
 
         # Calculate position based on value if position_x not set
@@ -263,7 +274,7 @@ class Slider(QWidget):
 
             # Get string width and height for current font
             metrics = QFontMetrics(self.__font)
-            text_width = metrics.width(value_string_full)
+            text_width = metrics.horizontalAdvance(value_string_full)
             text_height = metrics.tightBoundingRect(value_string_full).height()
 
             # Calculate text position x
@@ -303,12 +314,7 @@ class Slider(QWidget):
         :return: value
         """
 
-        # Float
-        if self.__is_float:
-            return round(self.__value, self.__decimals)
-        # Int
-        else:
-            return int(self.__value)
+        return self.__round_cast_value(self.__value)
 
     def getValueFormatted(self) -> str:
         """Get the current formatted value shown on the slider
@@ -328,9 +334,11 @@ class Slider(QWidget):
 
         self.__value = self.__clamp_value(value)
         self.__position_x = None
-        self.update()
         # Emit value changed signal
-        self.__emit_value_changed()
+        if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+            self.__emit_value_changed()
+        # Repaint
+        self.update()
 
     def getMinimum(self) -> int | float:
         """Get the minimum value of the slider
@@ -347,7 +355,8 @@ class Slider(QWidget):
         """
 
         self.__minimum = minimum
-        self.update()
+        self.__force_repaint = True
+        self.setValue(self.__value)
 
     def getMaximum(self) -> int | float:
         """Get the maximum value of the slider
@@ -364,7 +373,8 @@ class Slider(QWidget):
         """
 
         self.__maximum = maximum
-        self.update()
+        self.__force_repaint = True
+        self.setValue(self.__value)
 
     def getRange(self) -> tuple[int | float, int | float]:
         """Get slider value range (minimum and maximum)
@@ -383,6 +393,8 @@ class Slider(QWidget):
 
         self.__minimum = minimum
         self.__maximum = maximum
+        self.__force_repaint = True
+        self.setValue(self.__value)
 
     def isFloat(self) -> bool:
         """Get whether the slider is a float slider
@@ -399,6 +411,7 @@ class Slider(QWidget):
         """
 
         self.__is_float = use_float
+        self.__force_repaint = True
         self.update()
 
     def getDecimals(self) -> int:
@@ -416,6 +429,7 @@ class Slider(QWidget):
         """
 
         self.__decimals = decimals
+        self.__force_repaint = True
         self.update()
 
     def getSingleStep(self) -> int | float:
@@ -465,6 +479,7 @@ class Slider(QWidget):
         """
 
         self.__thousands_separator = thousands_separator
+        self.__force_repaint = True
         self.update()
 
     def getDecimalSeparator(self) -> str:
@@ -482,6 +497,7 @@ class Slider(QWidget):
         """
 
         self.__decimal_separator = decimal_separator
+        self.__force_repaint = True
         self.update()
 
     def getPrefix(self) -> str:
@@ -499,6 +515,7 @@ class Slider(QWidget):
         """
 
         self.__prefix = prefix
+        self.__force_repaint = True
         self.update()
 
     def getSuffix(self) -> str:
@@ -516,6 +533,7 @@ class Slider(QWidget):
         """
 
         self.__suffix = suffix
+        self.__force_repaint = True
         self.update()
 
     def isShowingValue(self) -> bool:
@@ -533,6 +551,8 @@ class Slider(QWidget):
         """
 
         self.__showing_value = on
+        self.__force_repaint = True
+        self.update()
 
     def getTextColor(self) -> QColor:
         """Get the text color of the slider
@@ -549,6 +569,7 @@ class Slider(QWidget):
         """
 
         self.__text_color = color
+        self.__force_repaint = True
         self.update()
 
     def getBackgroundColor(self) -> QColor:
@@ -566,6 +587,7 @@ class Slider(QWidget):
         """
 
         self.__background_color = color
+        self.__force_repaint = True
         self.update()
 
     def getAccentColor(self) -> QColor:
@@ -583,6 +605,7 @@ class Slider(QWidget):
         """
 
         self.__accent_color = color
+        self.__force_repaint = True
         self.update()
 
     def getBorderColor(self) -> QColor:
@@ -601,6 +624,7 @@ class Slider(QWidget):
 
         self.__border_color = color
         self.__update_stylesheet()
+        self.__force_repaint = True
         self.update()
 
     def getBorderRadius(self) -> int:
@@ -619,6 +643,7 @@ class Slider(QWidget):
 
         self.__border_radius = border_radius
         self.__update_stylesheet()
+        self.__force_repaint = True
         self.update()
 
     def getFont(self) -> QFont:
@@ -636,6 +661,8 @@ class Slider(QWidget):
         """
 
         self.__font = font
+        self.__force_repaint = True
+        self.update()
 
     def isKeyboardInputEnabled(self) -> bool:
         """Get whether keyboard inputs are enabled
@@ -781,9 +808,18 @@ class Slider(QWidget):
     def __emit_value_changed(self):
         """Emit signal that the value of the slider has changed"""
 
+        self.valueChanged.emit(self.__round_cast_value(self.__value))
+
+    def __round_cast_value(self, value: int | float) -> int | float:
+        """Round float value or cast to int
+
+        :param value: value to round or cast
+        :return: value as rounded float or cast to int
+        """
+
         # Float slider
         if self.__is_float:
-            self.valueChanged.emit(round(self.__value, self.__decimals))
+            return round(value, self.__decimals)
         # Int slider
         else:
-            self.valueChanged.emit(int(self.__value))
+            return int(value)
