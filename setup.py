@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='pyqt-advanced-slider',
-    version='1.1.0',
+    version='1.1.1',
     author='Niklas Henning',
     author_email='business@niklashenning.com',
     license='MIT',
