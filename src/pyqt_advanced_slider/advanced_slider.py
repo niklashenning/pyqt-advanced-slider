@@ -35,14 +35,11 @@ class Slider(QWidget):
         self.__border_radius = 0
         self.__keyboard_input_enabled = True
         self.__mouse_wheel_input_enabled = True
-        self.__font = QFont()
-        self.__font.setFamily('Arial')
-        self.__font.setPointSize(9)
-        self.__font.setBold(True)
+        self.__font = QFont('Arial', 9, QFont.Bold)
 
         # Slider value
         self.__value = 0.0
-        self.__value_last_paint_event = None
+        self.__value_last_paint_event = -1
 
         # Flag to enable forcing a repaint when value has not changed
         self.__force_repaint = False
@@ -79,10 +76,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def mouseReleaseEvent(self, event):
         """Event that happens every time a mouse button gets released on this widget.
@@ -96,10 +94,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def mouseMoveEvent(self, event):
         """Event that happens every time the mouse gets moved on this widget.
@@ -112,10 +111,11 @@ class Slider(QWidget):
             # Set value and position
             self.__value = self.__get_value_from_position_x(event.pos().x())
             self.__position_x = self.__clamp_position_x(event.pos().x())
+            # Emit value changed signal
+            if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+                self.__emit_value_changed()
             # Call paint event
             self.update()
-            # Emit value changed signal
-            self.__emit_value_changed()
 
     def wheelEvent(self, event):
         """Event that happens every time the mouse wheel is scrolled on this widget.
@@ -314,12 +314,7 @@ class Slider(QWidget):
         :return: value
         """
 
-        # Float
-        if self.__is_float:
-            return round(self.__value, self.__decimals)
-        # Int
-        else:
-            return int(self.__value)
+        return self.__round_cast_value(self.__value)
 
     def getValueFormatted(self) -> str:
         """Get the current formatted value shown on the slider
@@ -339,9 +334,11 @@ class Slider(QWidget):
 
         self.__value = self.__clamp_value(value)
         self.__position_x = None
-        self.update()
         # Emit value changed signal
-        self.__emit_value_changed()
+        if self.__round_cast_value(self.__value_last_paint_event) != self.__round_cast_value(self.__value):
+            self.__emit_value_changed()
+        # Repaint
+        self.update()
 
     def getMinimum(self) -> int | float:
         """Get the minimum value of the slider
@@ -811,9 +808,18 @@ class Slider(QWidget):
     def __emit_value_changed(self):
         """Emit signal that the value of the slider has changed"""
 
+        self.valueChanged.emit(self.__round_cast_value(self.__value))
+
+    def __round_cast_value(self, value: int | float) -> int | float:
+        """Round float value or cast to int
+
+        :param value: value to round or cast
+        :return: value as rounded float or cast to int
+        """
+
         # Float slider
         if self.__is_float:
-            self.valueChanged.emit(round(self.__value, self.__decimals))
+            return round(value, self.__decimals)
         # Int slider
         else:
-            self.valueChanged.emit(int(self.__value))
+            return int(value)
